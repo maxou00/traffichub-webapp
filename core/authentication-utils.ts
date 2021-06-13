@@ -90,7 +90,16 @@ export async function singleProjectByUser(context: GetServerSidePropsContext, db
                 user: user._id,
             }
         });
-        return { props: { project: projects.docs[0] } }
+
+        if(projects.docs.length > 0){
+            let project = projects.docs[0];
+            let trackers = await db.partitionedFind("tracker", {
+                selector: {
+                    project: project._id
+                }
+            });
+            return { props: { project, trackers: trackers.docs } }
+        }
     }
     return {
         props: {}

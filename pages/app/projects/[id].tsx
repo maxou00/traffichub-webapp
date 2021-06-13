@@ -8,12 +8,12 @@ import { AppHeader } from "../../../components/AppHeader";
 import { Container, Grid, GridRow, GridColumn, Header, List } from "semantic-ui-react";
 import { combineInjectors, extractUserFromContext, InjectorProps, singleProjectByUser, userProfilePropsInjector } from "../../../core/authentication-utils";
 import { database } from "../../../core/database";
-import { IProject, IUser } from "../../../core";
+import { IProject, IUser, IWebTracker } from "../../../core";
 import { useRouter } from "next/router";
 import { Button } from "semantic-ui-react";
 import { ProjectTrackers } from "../../../components/ProjectTrackers";
 
-export default function SingleProject(props: {profile: IUser, project?: IProject}) {
+export default function SingleProject(props: {profile: IUser, project?: IProject, trackers: IWebTracker[]}) {
     const router = useRouter();
 
     React.useEffect(() => {
@@ -66,7 +66,7 @@ export default function SingleProject(props: {profile: IUser, project?: IProject
                             </List>
                         </div>
                         <div>
-                            <ProjectTrackers project={props.project}/>
+                            <ProjectTrackers project={props.project} trackers={props.trackers}/>
                         </div>
                     </Container>
                 </div>
