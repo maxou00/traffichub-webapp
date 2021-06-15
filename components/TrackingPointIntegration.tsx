@@ -1,14 +1,17 @@
 import React from "react";
 import { Grid, Message, Button, Icon } from "semantic-ui-react";
 import { IProject, IWebTracker } from "../core";
+import { generateObfuscatedReporter } from "../core/utils";
 
 export function TrackingPointIntegration(props: { project: IProject, tracker: IWebTracker }) {
     const [copied, setCopied] = React.useState(false);
 
     let code = `
         <script 
-            src="https://cdn.traffichub.co/report?tag=${props.tracker.tag}" 
-            defer>
+            type="text/javascript">
+            ${
+                generateObfuscatedReporter(props.tracker.tag)
+            }
         </script>
     `;
 
@@ -26,14 +29,11 @@ export function TrackingPointIntegration(props: { project: IProject, tracker: IW
             <Message color="blue">
                 <Message.Header>Activez le traqueur sur votre site</Message.Header>
                 <p>
-                    Intégrez ce point de suivi sur les pages html à suivre, en mettant la balise suivante dans la balise {'<head></head>'} <br/>
-                    <code>
-                        {code}
-                    </code>
+                    Intégrez ce point de suivi sur les pages à suivre, en ajoutant le script suivant dans la balise {'<body></body>'} ou {'<head></head>'} <br/>
                 </p>
                 <Button disabled={copied} color={copied ? "green" : "blue"} onClick={onCopyScript} >
                     <Icon name={copied ? "check" : "copy"} style={{color: 'white'}}/>
-                    {copied ? "Copié !" : "Copier"}
+                    {copied ? "Script copié !" : "Copier le script"}
                 </Button>
             </Message>
         </Grid.Column>
