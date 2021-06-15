@@ -21,6 +21,7 @@ export interface IProject {
 
 export interface IWebTracker {
     _id: string;
+    project: string;
     title: string;
     type: 'web';
     url: string;

@@ -10,24 +10,17 @@ import { combineInjectors, singleProjectByUser, userProfilePropsInjector } from 
 import { IProject, IUser, IWebTracker } from "../../../core";
 import { useRouter } from "next/router";
 import { Button, Dropdown, Modal, Form } from "semantic-ui-react";
-import { ProjectTrackers } from "../../../components/ProjectTrackers";
 import { TrackingPointStats } from "../../../components/TrackingPointStats";
 import { TrackingPointIntegration } from "../../../components/TrackingPointIntegration";
 
 export default function SingleProject(props: { profile: IUser, project?: IProject, trackers: IWebTracker[] }) {
-    const [selectedTracker, setSelectedTracker] = React.useState<IWebTracker | undefined>(props.trackers[0] || undefined);
+    const [selectedTracker, setSelectedTracker] = React.useState<IWebTracker | undefined>(props.trackers ? props.trackers[0] : undefined);
 
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [isCreating, setIsCreating] = React.useState(false);
     const [errors, setErrors] = React.useState<any>({});
 
     const router = useRouter();
-
-    React.useEffect(() => {
-        if (!props.project) {
-            router.replace("/app/projects");
-        }
-    }, []);
 
     function handleTrackerSelection(id: string) {
         let trackr = props.trackers.find((t) => t._id === id);
@@ -78,63 +71,69 @@ export default function SingleProject(props: { profile: IUser, project?: IProjec
 
     return <AuthProvider profile={props.profile}>
         <Protected>
-            <div className={styles.dashboard}>
-                <Head>
-                    <title>TrafficHub - Tableau de bord</title>
-                </Head>
-                <div>
-                    <AppHeader />
-                </div>
-                <div className={styles.content_wrapper}>
-                    <Container>
+            {
+                props.project && props.trackers && <>
+
+
+                    <div className={styles.dashboard}>
+                        <Head>
+                            <title>TrafficHub - Tableau de bord</title>
+                        </Head>
                         <div>
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Header color="blue" size="large">PROJET {props.project.title.toUpperCase()}</Header>
-                                <div className="actions">
-                                    {
-                                        selectedTracker &&
-                                        <Dropdown selection value={selectedTracker._id} options={props.trackers.map((t) => {
-                                            return {
-                                                key: t._id,
-                                                text: t.title,
-                                                value: t._id
+                            <AppHeader />
+                        </div>
+                        <div className={styles.content_wrapper}>
+                            <Container>
+                                <div>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <Header color="blue" size="large">PROJET {props.project.title.toUpperCase()}</Header>
+                                        <div className="actions">
+                                            {
+                                                selectedTracker &&
+                                                <Dropdown selection value={selectedTracker._id} options={props.trackers.map((t) => {
+                                                    return {
+                                                        key: t._id,
+                                                        text: t.title,
+                                                        value: t._id
+                                                    }
+                                                })} onChange={(ev, v) => handleTrackerSelection(v.value as string)}>
+                                                </Dropdown>
                                             }
-                                        })} onChange={(ev, v) => handleTrackerSelection(v.value as string)}>
-                                        </Dropdown>
-                                    }
-                                    <Button color="blue" onClick={() => setDialogOpen(true)}>Créer un traqueur</Button>
+                                            <Button color="blue" onClick={() => setDialogOpen(true)}>Créer un traqueur</Button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span>{props.project.comment}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <span>{props.project.comment}</span>
-                            </div>
+                            </Container>
+                            <div style={{ height: '24px' }}></div>
+                            {
+                                selectedTracker && <div>
+                                    <TrackingPointIntegration project={props.project} tracker={selectedTracker} />
+                                    <TrackingPointStats project={props.project} tracker={selectedTracker} />
+                                </div>
+                            }
                         </div>
-                    </Container>
-                    <div style={{ height: '24px' }}></div>
-                    {
-                        selectedTracker && <div>
-                            <TrackingPointIntegration project={props.project} tracker={selectedTracker} />
-                            <TrackingPointStats project={props.project} tracker={selectedTracker} />
-                        </div>
-                    }
-                </div>
-            </div>
-            <Modal open={dialogOpen} onClose={() => setDialogOpen(false)}>
-                <Modal.Header>
-                    Ajouter un traqueur
-                </Modal.Header>
-                <Modal.Content>
-                    <Form onSubmit={onCreate}>
-                        <Form.Input name="trackerTitle" label="Titre du point de suivi" type="text" />
-                        <Form.Input name="url" label="Lien du site sur lequel vous définissez votre traqueur" type="text" />
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
-                            <Form.Button color="blue">
-                                Créer ce point de suivi
-                            </Form.Button>
-                        </div>
-                    </Form>
-                </Modal.Content>
-            </Modal>
+                    </div>
+                    <Modal open={dialogOpen} onClose={() => setDialogOpen(false)}>
+                        <Modal.Header>
+                            Ajouter un traqueur
+                        </Modal.Header>
+                        <Modal.Content>
+                            <Form onSubmit={onCreate}>
+                                <Form.Input name="trackerTitle" label="Titre du point de suivi" type="text" />
+                                <Form.Input name="url" label="Lien du site sur lequel vous définissez votre traqueur" type="text" />
+                                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                    <Form.Button color="blue">
+                                        Créer ce point de suivi
+                                    </Form.Button>
+                                </div>
+                            </Form>
+                        </Modal.Content>
+                    </Modal>
+                </>
+            }
         </Protected>
     </AuthProvider>
 }
