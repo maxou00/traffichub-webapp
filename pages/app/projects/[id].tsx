@@ -12,6 +12,7 @@ import { useRouter } from "next/router";
 import { Button, Dropdown, Modal, Form } from "semantic-ui-react";
 import { ProjectTrackers } from "../../../components/ProjectTrackers";
 import { TrackingPointStats } from "../../../components/TrackingPointStats";
+import { TrackingPointIntegration } from "../../../components/TrackingPointIntegration";
 
 export default function SingleProject(props: { profile: IUser, project?: IProject, trackers: IWebTracker[] }) {
     const [selectedTracker, setSelectedTracker] = React.useState<IWebTracker | undefined>(props.trackers[0] || undefined);
@@ -90,14 +91,17 @@ export default function SingleProject(props: { profile: IUser, project?: IProjec
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <Header color="blue" size="large">PROJET {props.project.title.toUpperCase()}</Header>
                                 <div className="actions">
-                                    <Dropdown selection value={selectedTracker._id} options={props.trackers.map((t) => {
-                                        return {
-                                            key: t._id,
-                                            text: t.title,
-                                            value: t._id
-                                        }
-                                    })} onChange={(ev, v) => handleTrackerSelection(v.value as string)}>
-                                    </Dropdown>
+                                    {
+                                        selectedTracker &&
+                                        <Dropdown selection value={selectedTracker._id} options={props.trackers.map((t) => {
+                                            return {
+                                                key: t._id,
+                                                text: t.title,
+                                                value: t._id
+                                            }
+                                        })} onChange={(ev, v) => handleTrackerSelection(v.value as string)}>
+                                        </Dropdown>
+                                    }
                                     <Button color="blue" onClick={() => setDialogOpen(true)}>Créer un traqueur</Button>
                                 </div>
                             </div>
@@ -105,13 +109,14 @@ export default function SingleProject(props: { profile: IUser, project?: IProjec
                                 <span>{props.project.comment}</span>
                             </div>
                         </div>
-                        <div style={{ height: '24px' }}></div>
-                        {
-                            selectedTracker && <div>
-                                <TrackingPointStats project={props.project} tracker={selectedTracker} />
-                            </div>
-                        }
                     </Container>
+                    <div style={{ height: '24px' }}></div>
+                    {
+                        selectedTracker && <div>
+                            <TrackingPointIntegration project={props.project} tracker={selectedTracker} />
+                            <TrackingPointStats project={props.project} tracker={selectedTracker} />
+                        </div>
+                    }
                 </div>
             </div>
             <Modal open={dialogOpen} onClose={() => setDialogOpen(false)}>

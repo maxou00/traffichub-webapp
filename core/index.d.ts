@@ -24,6 +24,7 @@ export interface IWebTracker {
     title: string;
     type: 'web';
     url: string;
+    tag: string;
     createdAt: number;
     updatedAt: number;
 }
