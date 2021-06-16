@@ -1,7 +1,7 @@
 import React from "react";
-import { InputField } from "./InputField";
 import styles from "../styles/SettingsZone.module.scss";
 import { useAuthProfile } from "./AuthContext";
+import { Form } from "semantic-ui-react";
 import { IUser } from "../core";
 
 export function SettingsZone() {
@@ -22,33 +22,38 @@ export function SettingsZone() {
         <div>
             <h2>Paramètres</h2>
         </div>
-        <form onSubmit={onSubmit} className={styles.profile}>
-            <InputField 
+        <Form onSubmit={onSubmit} className={styles.profile}>
+            <Form.Input 
                 name="firstName" 
+                width="8"
                 defaultValue={profile.firstName} 
                 label="Prénom"
                 type="text"/>
-            <InputField 
+            <Form.Input 
                 name="lastName" 
+                width="8"
                 defaultValue={profile.lastName} 
                 label="Nom" 
                 type="text"/>
-            <InputField 
+            <Form.Input 
                 name="email" 
+                fluid
                 defaultValue={profile.email} 
                 label="Adresse électronique" 
                 type="email"/>
-            <InputField 
+            <Form.Input 
                 name="password" 
+                width="8"
                 label="Mot de passe" 
                 type="password"/>
-            <InputField 
+            <Form.Input 
                 name="password" 
+                width="8"
                 label="Confirmez votre mot de passe" 
                 type="password"/>
             <div className={styles.actions}>
-                <button className={styles.submit}>Mettre à jour mon profil</button>
+                <Form.Button className={styles.submit}>Mettre à jour mon profil</Form.Button>
             </div>
-        </form>
+        </Form>
     </div>
 }
