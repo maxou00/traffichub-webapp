@@ -2,7 +2,6 @@ import Link from "next/link";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React from "react";
-import { InputField } from "../../components/InputField";
 import styles from "../../styles/Login.module.scss";
 import { Logo } from "../../components/Logo";
 import { Form } from "semantic-ui-react";
